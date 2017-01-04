@@ -15,7 +15,7 @@ class hashTable{
 		Hash oldTail;
 		/*Bucket index provides the index for the set of nodes the new node will be attached do
 		the code is broken out for clarity*/
-		int bucketIndex =hashBucket(h.getHash());
+		int bucketIndex = this.hashBucket( h.getHash());
 		/* Links the bucket list together by appending the new hashes to the last node in the bucket.*/
 		this.hashTable[ bucketIndex ].returnLastNode().setNext(h);
 
@@ -71,7 +71,7 @@ class hashTable{
 		return hash  % 13;
 	}
 
-	}
+	
 /*
 	private String hashEncode(String firstName, String lastName){
 		String hashedString = new String();
@@ -91,18 +91,6 @@ class hashTable{
 
 	}
 */
-	private Integer hashIndex(String hashVal){
-		for(int i=0; i<this.hashTable[0].length; i++){
-			if(hashVal == hashTable[0][i].getHash()){
-				return  new Integer(i);
-			}
-		}
-
-		return null;
-	}
-
-	public int getHashIndex( K key){
 
 
-	}
 }

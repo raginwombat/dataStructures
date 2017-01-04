@@ -1,5 +1,5 @@
 class Hash{
-	private String hash;
+	private long hash;
 	private Hash next;
 	private String dataFirst;
 	private String dataLast;
@@ -7,12 +7,12 @@ class Hash{
 	private String dataPhone;
 
 
-	public void setHash(String hash){
+	public void setHash(long hash){
 		this.hash = hash;
 
 	}
 
-	public String getHash(){
+	public long getHash(){
 		return this.hash;
 	}
 
@@ -54,7 +54,7 @@ class Hash{
 		this.next = next;
 	}
 
-	public String getNext(){
+	public Hash getNext(){
 		return this.next;
 	}
 
@@ -64,7 +64,7 @@ class Hash{
 			return this;
 		}
 		else{
-			this.next.returnLastNode();
+			return this.next.returnLastNode();
 		}
 	}
 
