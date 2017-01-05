@@ -6,7 +6,12 @@ class HashTable{
 	private Hash hashTable[];
 
 	public HashTable(){
-		Hash [] hashTable =  new Hash [13];
+		/*Create new hash table*/
+		this.hashTable =  new Hash [13];
+
+		/*Initiate Hash  Tables */
+		for ( int i=0; i< hashTable.length; i++)
+			this.hashTable[i] = new Hash();
 
 	}
 
@@ -15,14 +20,13 @@ class HashTable{
 		@param: First and  last name strings
 		@returns: Hash as a string
 		*/
-		int hash =0;
+		long hash =0;
 		int g = 31;
 		String name = firstName + lastName;
 		for( int i =0 ; i< name.length(); i++ ){
-			hash = hash *g + name.charAt(i);
-
+			/* Mod Long.Max_Val compresses hash space reducing long overflows*/
+			hash =  ((hash *g) + name.charAt(i)) % Long.MAX_VALUE;
 		}
-		//Ddebug: System.out.println(hash);
 		return hash;
 	}
 
@@ -31,7 +35,9 @@ class HashTable{
 		@param: Long with the hash for an entry
 		@returns: Hash Bucket Entry
 		*/
-		return (int) hash  % 13;
+		System.out.println(hash);
+		/* Using Absolute value allows ignoring of negative hash values*/
+		return (int) ((hash  % 13) <= 0 ? (0-hash%13): (hash%13));
 	}
 
 
@@ -44,35 +50,57 @@ class HashTable{
 		/*Bucket index provides the index for the set of nodes the new node will be attached do
 		the code is broken out for clarity*/
 		int bucketIndex = this.hashBucket( h.getHash());
-		 System.out.println(bucketIndex); //Debug
 		/* Links the bucket list together by appending the new hashes to the last node in the bucket.*/
-		hashTable[0].print();
+		/* Insert Debug */
+		System.out.println(bucketIndex);
+		System.out.println(h.getHash());
+		h.print();
+		this.hashTable[bucketIndex].print();
 		this.hashTable[ bucketIndex ].returnLastNode().setNext(h);
+		/* Insert Debug 2*/
+		this.hashTable[ bucketIndex ].returnLastNode().print();
 
 	return true;
 	}
 
 
-	public void delete(Hash h){
+	public boolean delete(Hash h){
 	/* Function to delete hashes form hash table.
 	Uses java reference passing ot manipulate hash bucket using alias checkHash.
 	@param: Hashes to be deleted from the has table
 	@returns: The values that were deleted from the has table.
 	*/
-		Hash checkHash;
-		
+		Hash checkHash, prevHash;
+		h.print();
+		System.out.println(h.getHash());
+		System.out.println(this.hashBucket( h.getHash()) );
+
 		int bucketIndex = this.hashBucket( h.getHash());
-		checkHash = hashTable[ bucketIndex];
-		while( checkHash.getNext().getHash() != h.getHash()  && checkHash.getNext() != null ){
+		
+		
+		prevHash  = hashTable[ bucketIndex];
+		checkHash = prevHash.getNext();
+
+		while( prevHash.getHash() != h.getHash() && checkHash.getHash() != h.getHash()  && checkHash.getNext() != null ){
+			prevHash = checkHash;
 			checkHash = checkHash.getNext();
 		}
-		/*!! Need to double check if next.next == null thenthe null will get passed and bet set, 
-		effceitly making this a tail deletion. need to ensure won't throw ref error bc of null 
-		should be hanlded by the null check above*/
-		if(checkHash.getNext().getHash() == h.getHash()){
-			checkHash.setNext(checkHash.getNext().getNext());
-		}
-		
+
+		if(checkHash.getHash() == h.getHash())
+			prevHash = checkHash;
+
+		//Case 1: Hash is the root of the hash bucket
+		if(prevHash.getHash() == h.getHash())
+			prevHash = checkHash;
+		//Case 2: Hash is not the root of the bucket
+		if(checkHash.getHash() == h.getHash())
+			prevHash.setNext( checkHash.getNext());
+		//Case 3: No hash found then nothing to do.
+		if( checkHash == checkHash.returnLastNode())
+			return false;
+
+		//Hash was found and function didn't end early
+		return true;
 			
 		
 

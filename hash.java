@@ -104,12 +104,12 @@ class Hash{
 
 	public Hash returnLastNode(){
 		/*Helper method to traverse linked list */
-		System.out.println("return last node code");
+		//System.out.println("return last node code");
 		if(this.next == null){
 			return this;
 		}
 		else{
-			System.out.println("Trying next ndoe");
+			//System.out.println("Trying next ndoe");
 			return this.getNext().returnLastNode();
 		}
 	}
