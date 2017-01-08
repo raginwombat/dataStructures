@@ -35,7 +35,7 @@ class HashTable{
 		@param: Long with the hash for an entry
 		@returns: Hash Bucket Entry
 		*/
-		System.out.println(hash);
+
 		/* Using Absolute value allows ignoring of negative hash values*/
 		return (int) ((hash  % 13) <= 0 ? (0-hash%13): (hash%13));
 	}
@@ -46,21 +46,12 @@ class HashTable{
 	@param: Hash to be inserted into the hastable
 	@returns: boolean value if the insertion was sucessfull
 	*/
-	
+		
 		/*Bucket index provides the index for the set of nodes the new node will be attached do
 		the code is broken out for clarity*/
 		int bucketIndex = this.hashBucket( h.getHash());
-		/* Links the bucket list together by appending the new hashes to the last node in the bucket.*/
-		/* Insert Debug */
-		System.out.println(bucketIndex);
-		System.out.println(h.getHash());
-		h.print();
-		this.hashTable[bucketIndex].print();
-		this.hashTable[ bucketIndex ].returnLastNode().setNext(h);
-		/* Insert Debug 2*/
-		this.hashTable[ bucketIndex ].returnLastNode().print();
-
-	return true;
+		
+		return this.hashTable[bucketIndex].add(h);
 	}
 
 
@@ -71,40 +62,38 @@ class HashTable{
 	@returns: The values that were deleted from the has table.
 	*/
 		Hash checkHash, prevHash;
-		h.print();
-		System.out.println(h.getHash());
-		System.out.println(this.hashBucket( h.getHash()) );
-
 		int bucketIndex = this.hashBucket( h.getHash());
 		
 		
 		prevHash  = hashTable[ bucketIndex];
 		checkHash = prevHash.getNext();
 
+		//Case: Hash found in first node have to reset bucket Index
+		if(prevHash.getHash() == h.getHash()){
+			hashTable[bucketIndex] = checkHash;
+			return true;
+		}
+
+		//Check for hash in rest of hashes
 		while( prevHash.getHash() != h.getHash() && checkHash.getHash() != h.getHash()  && checkHash.getNext() != null ){
 			prevHash = checkHash;
 			checkHash = checkHash.getNext();
 		}
 
-		if(checkHash.getHash() == h.getHash())
-			prevHash = checkHash;
-
-		//Case 1: Hash is the root of the hash bucket
-		if(prevHash.getHash() == h.getHash())
-			prevHash = checkHash;
-		//Case 2: Hash is not the root of the bucket
-		if(checkHash.getHash() == h.getHash())
+		//Case: Hash found someohere in between
+		if(checkHash.getHash() == h.getHash()){
 			prevHash.setNext( checkHash.getNext());
-		//Case 3: No hash found then nothing to do.
-		if( checkHash == checkHash.returnLastNode())
-			return false;
+			return true;
+		}
+	
+		/*Case: hash not found by last node equilavent check to 
+		if(prevHash.getHash() != h.getHash() && checkHash.getHash() != h.getHash() 
+			&& checkHash == prevHash.returnLastNode())
+		*/
 
-		//Hash was found and function didn't end early
-		return true;
-			
+
+		return false;
 		
-
-
 	}
 
 
@@ -137,10 +126,11 @@ class HashTable{
 	private Hash lookUp(long hashVal, int bucketIndex) {
 		Hash checkHash;
 		checkHash = hashTable[ bucketIndex];
-		while( checkHash.getHash() != hashVal && checkHash.getNext() != null){
+		while(checkHash != null && checkHash.getHash() != hashVal && checkHash.getNext() != null){
 			checkHash = checkHash.getNext();
 		}
-		if(checkHash.getHash() == hashVal ){
+
+		if(checkHash != null &&checkHash.getHash() == hashVal ){
 			//checkHash.print();
 			return checkHash;
 		}
@@ -151,23 +141,42 @@ class HashTable{
 	}
 	
 
-	public Hash nameLookUp(String firstName, String lastName){
+	public void nameLookUp(String firstName, String lastName){
 		long hash = this.hash(firstName, lastName);
-		return lookUp( hash , this.hashBucket(hash));
+		if( this.lookUp( hash , this.hashBucket(hash)) != null)
+			System.out.println( "Found " +this.lookUp( hash , this.hashBucket(hash)).getName()+" hash is:"+hash);
+	
+		else
+			System.out.println(firstName + " "+ lastName+" not found.");
+
 
 	}
 
 	public void nameDelete(String firstName, String lastName){
 		long hash =  this.hash(firstName, lastName);
+		Hash checkHash = this.lookUp( hash , this.hashBucket(hash));
+		if( checkHash != null && this.delete(checkHash) == true)
+			System.out.println("Node deleted for "+ firstName+ " "+lastName);
 
-		this.delete( this.lookUp( hash , this.hashBucket(hash))  );
+		else
+			System.out.println("Node not deleted for "+ firstName+ " "+lastName);
 	}
 
-	public Hash add(String firstName, String lastName,  String phone, String email){
+	public void add(String firstName, String lastName,  String phone, String email){
 		Hash h = new Hash( this.hash(firstName, lastName), firstName, lastName, phone, email);
-		this.insert(h);
+		if(this.insert(h) == true)
+			System.out.println("Added "+ firstName+ " "+lastName);
 
-		return h;
+		else
+			System.out.println("Node not added for "+ firstName+ " "+lastName);;
+	}
+
+	public void printHashes(){
+		for (int i=0; i< hashTable.length; i++){
+			System.out.println("Hash Index: "+ i );
+			hashTable[i].printAll();
+		}
+
 	}
 
 }
