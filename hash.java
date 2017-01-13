@@ -30,7 +30,7 @@ class Hash{
 	}
 
 
-	public void setThis( long hash, Hash next, String firstName, String lastName, String phone, String email){
+	private void setThis( long hash, Hash next, String firstName, String lastName, String phone, String email){
 		this.setHash(hash);
 		this.setNext(next);
 		this.setDataFirst( firstName);
@@ -91,12 +91,10 @@ class Hash{
 
 	public Hash returnLastNode(){
 		/*Helper method to traverse linked list */
-		//System.out.println("return last node code");
 		if(this.getNext() == null){
 			return this;
 		}
 		else{
-			//System.out.println("Trying next ndoe");
 			return this.getNext().returnLastNode();
 		}
 	}
