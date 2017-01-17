@@ -1,3 +1,4 @@
+
 class Tree{
 	private String dataFirst;
 	private String dataLast;
@@ -9,12 +10,12 @@ class Tree{
 
 
 	public Tree(){
-		this.setThis(null, null, null, null, null, null);
+		this.setThis("", "", "", "", null, null);
 
 	}
 
 	public Tree(String firstName, String lastName){
-		this.setThis(firstName, lastName, null, null, null, null);
+		this.setThis(firstName, lastName, "", "", null, null);
 
 	}
 
@@ -30,11 +31,24 @@ class Tree{
 
 	}
 
+	public Tree(Tree t){
+
+		this.setThis(t.getFirstName(), t.getLastName(), t.getEmail(), t.getPhoneNum(), t.getRightNode(), t.getLeftNode());
+	}
+
 	private void setThis(String firstName, String lastName, String email, String phoneNum, 
 		Tree leftTree, Tree rightTree){
-		this.dataFirst = firstName;
+		/* Object warppers for params needs to be parsed before throwing to wrapper
+		this.dataFirst = new String( firstName);
+		this.dataLast = new String( lastName);
+		this.dataEmail= new String( email);
+		this.dataPhone = new String( phoneNum);
+		this.childLeft = new Tree(leftTree);
+		this.childRight = new Tree(rightTree);
+		*/
+		this.dataFirst =  firstName;
 		this.dataLast = lastName;
-		this.dataEmail = email;
+		this.dataEmail= email;
 		this.dataPhone = phoneNum;
 		this.childLeft = leftTree;
 		this.childRight = rightTree;
@@ -43,136 +57,101 @@ class Tree{
 	}
 
 	private String hash(){
+		String hash = new String(""); 
+		String[] vals = new String[4] ;
+		vals[0] = this.getLastName();
+		vals[1] = this.getFirstName();
+		vals[2] = this.getPhoneNum();
+		vals[3] = this.getEmail();
+		//hash =  (String) (this.getLastName() + this.getFirstName() + this.getPhoneNum()+this.getEmail()).toUpperCase() ;
+		for(String val:vals ){
+			//System.out.println("Hash sub val" + val);
 
-		return  (String) (this.getLastName() + this.getFirstName() + this.getPhoneNum()+this.getEmail()).toUpperCase() ;
+			if ( !val.isEmpty())
+				hash = hash + val.toUpperCase();
+			
+		}
+		//System.out.println("Hash val" + hash);
+		return hash;
 	}
 
-	public Boolean insert(Tree t){
+	public boolean insert(Tree t){
 	/* Function to add a given tree to the current tree
 	@param: Tree t be a valid tree
 	@returns: Boolean signifying sucessful insertion
 	*/
-		System.out.println("Hit Insert for: "+t.getFirstName());
-		//Store hashes so not recalled
 		String thisHash, tHash;
 		thisHash = this.hash();
 		tHash = t.hash();
 
-		
 		int checkLength = thisHash.length();
 		if( checkLength > tHash.length() )
 				checkLength = tHash.length();
 			//Interate through smallest string and check for precedence
-		for ( int i=0; i<checkLength; i++){
-			System.out.println("Hit Insert for loop");
-
-			//Check for duplicate node
-			if(thisHash == tHash){
-				System.out.println("Passsed Check 1");
-				System.out.println("thishash: "+thisHash.charAt(i) + " thash: "+tHash.charAt(i));
+		if(thisHash.isEmpty()){
+				this.setThis(t.getFirstName(), t.getLastName(), t.getEmail(), t.getPhoneNum(), t.getRightNode(), t.getLeftNode());
+				return true;
+			}
+		else if(thisHash == tHash){
 				System.out.println("Duplicate node");
 				return false;
 			}
 
-			else if(thisHash.charAt(i) < tHash.charAt(i) ){
-				// Go down Right Tree
-				System.out.println("Passsed Check 2");
-				System.out.println("thishash: "+thisHash.charAt(i) + " thash: "+tHash.charAt(i));
-				if(this.getRightNode() == null){
-						System.out.println("Inserting node for rigt node: "+t.getName());
-						this.setRightNode(t);
-						return true;
-					}
-				else{
-					this.childRight.insert(t);
-					
-				}
+		for ( int i=0; i<checkLength; i++){
+			if(thisHash.charAt(i) < tHash.charAt(i) && this.getRightNode() == null ){
+				return this.setRightNode(t);
+				
+			}
+			else if(thisHash.charAt(i) < tHash.charAt(i) && this.getRightNode() != null ){
+				return this.getRightNode().insert(t);
 			}
 
-
-			else if(thisHash.charAt(i) > tHash.charAt(i) ){
-			// Go down left Tree
-				System.out.println("Passsed Check 3");
-				System.out.println("thishash: "+thisHash.charAt(i) + " thash: "+tHash.charAt(i));
-				if(this.getLeftNode() == null){
-						System.out.println("Inserting node for left node : "+t.getName());
-						this.setLeftNode(t);
-						return true;
-
-				}
-				else{
-					this.childLeft.insert(t);
-					
-				}
+			else if(thisHash.charAt(i) > tHash.charAt(i) && this.getLeftNode() == null ){
+				return   this.setLeftNode(t); 
+				
 			}
-		
-			//If haven't exited then  dealing with a simlar node with diff vals, like same nmae diff number
-			// shouldn't need since hash is full string
-			/*
-			else if(i == checkLength-1){
-				if(thisHash.length() > tHash.length()){
-					if(this.getRightNode() == null){
-						System.out.println("Inserting node for : "+t.getName());
-						this.setRightNode(t);
-						return true;
-					}
-				else{
-					this.getRightNode().insert(t);
-					
-				}
-
-				}
-				else if(thisHash.length() <  tHash.length()){
-					if(this.getLeftNode() == null){
-						System.out.println("Inserting node for : "+t.getName());
-						this.setLeftNode(t);
-						return true;
-					}
-					else{
-						this.getLeftNode().insert(t);
-						
-					}
-				}
-
-			}*/
-			
+			else if(thisHash.charAt(i) > tHash.charAt(i) && this.getLeftNode() != null ){
+				return this.getLeftNode().insert(t);
+				
+			}
 
 		}
 
+		System.out.println("Didnt insert node failed tests ");
+		System.out.println("In method for: " + this.getName());
+		System.out.println("checkLength: " + checkLength);
+		System.out.println("thisHash: " + thisHash + " thash: "+tHash);
+
 		
-
-		/*
-
-		//Just append to the last note
-		this.lastRightNode().setRightNode(t);
-		this.preOrderSort();
-		System.out.println("Node added for "+this.lastRightNode().getName());
-		return true; */
-
-		//if the code is getting this far something went wrong
 		return false;
 	}
 
-	public Boolean add(String firstName, String lastName, String email, String phoneNum){
+	public boolean add(String firstName, String lastName, String email, String phoneNum){
 	/* Function to add a given tree to the current tree, allows a param argument instead 
 			of  a tree object
 	@param: Tree t be a valid tree
 	@returns: Boolean signifying sucessful insertion
 	*/
-		System.out.println("Hit add node for: "+firstName);
+		
 		//Check to see if node exists
-		if (this.lookUp(new Tree(firstName,lastName) ) != null){
+		//if (this.lookUp(new Tree(firstName,lastName) ) == null){
+		boolean result = this.insert(new Tree(firstName, lastName, email, phoneNum) );
+		if( result ) {
+
 			//Node doesn't exist
-			this.insert(new Tree(firstName, lastName, email, phoneNum));
+			System.out.println("Added new node for: "+ firstName);
+			//this.insert(new Tree(firstName, lastName, email, phoneNum));
 
 			return true;
 
 		}
-		else
+		else{
+			
 			return false;
+		}
 	}
 
-	public Boolean delete(Tree t){
+	public boolean delete(Tree t){
 	/* Function to delete a given node in the the current tree
 	@param: Tree t be a valid tree
 	@returns: Boolean signifying sucessful insertion
@@ -187,13 +166,16 @@ class Tree{
 			return false;
 	}
 
-	public Boolean remove(Tree t){
+	public boolean remove(Tree t){
 
 		return true;
 	} 
 
-	public void printAll(){
-
+	public void print(){
+		System.out.println("First: "+ this.getFirstName() );
+		System.out.println("Last: "+ this.getLastName() );
+		System.out.println("Email: "+ this.getEmail() );
+		System.out.println("Phone: "+ this.getPhoneNum() );
 
 	}
 
@@ -206,21 +188,25 @@ class Tree{
 	}
 
 	public boolean setRightNode(Tree rNode){
+		//System.out.println("Right node =:" + this.childRight);
 		if (this.childRight == null){
 			this.childRight = rNode;
 			return true;
 		}
-		else
+		else {
 			return false;
+			}
 	}
 	
 	public boolean setLeftNode(Tree lNode){
+		//System.out.println("left node =:" + this.childLeft);
 		if (this.childLeft == null){
 			this.childLeft = lNode;
 			return true;
 		}
-		else
+		else{
 			return false;
+		}
 	}
 
 
@@ -241,12 +227,71 @@ class Tree{
 
 
 	public void nameLookUp(String firstName, String lastName){
+		Tree result = this.lookUp ( new Tree( firstName, lastName) );
+		if( result !=null){
+			System.out.println("Found Match for: "+ firstName);
+			result.print();
+		}
+		else
+			System.out.println("No match found for : " + firstName);
 		
 
 	}
 
 	public Tree lookUp(Tree t){
-		return t;
+		String thisHash, tHash;
+		thisHash = this.hash();
+		tHash = t.hash();
+
+		//System.out.println("Lookup function hit for: "+t.getName());
+		int checkLength = thisHash.length();
+		if( checkLength > tHash.length() )
+				checkLength = tHash.length();
+			//Interate through smallest string and check for precedence
+		//System.out.println("Check length:" +checkLength);
+
+		//Full hash match
+		if(thisHash == tHash){
+				return this;
+			}
+		
+		//Have to allow a partial string serach to accomodate first naem lookups 
+		else if(thisHash.startsWith(tHash) ){
+			//System.out.println("Partial match");
+			return this;
+		}
+		else if(thisHash.isEmpty() || tHash.isEmpty()){
+			return null;
+		}
+		
+		for ( int i=0; i<=checkLength; i++){
+			if( thisHash.charAt(i) < tHash.charAt(i) && !thisHash.isEmpty() && !tHash.isEmpty() &&   this.getRightNode() != null ){
+				//System.out.println("tHash: " + tHash);
+				//System.out.println("thisHash: " + thisHash);
+				return this.childRight.lookUp(t);
+				
+			}
+
+			else if( thisHash.charAt(i) > tHash.charAt(i) && !thisHash.isEmpty() && !tHash.isEmpty() &&  this.getLeftNode() != null){
+				return this.childLeft.lookUp(t);
+				
+			}
+			
+			if( thisHash.charAt(i) < tHash.charAt(i) &&  this.getRightNode() == null){
+				//System.out.println("tHash: " + tHash);
+				//System.out.println("thisHash: " + thisHash);
+				return null;
+			}
+
+			else if( thisHash.charAt(i) > tHash.charAt(i) &&  this.getLeftNode() == null ){
+				//this.childLeft.lookUp(t);
+				return null;
+			} 
+		}
+
+			
+		
+		return null;
 	}
 
 	public void nameDelete(String firstName, String lastName){
@@ -289,7 +334,18 @@ class Tree{
 		return this.dataEmail;
 	}
 
+	public void printAll(){
 
+		if(this.getLeftNode() != null){
+			this.getLeftNode().printAll();
+		}
+		this.print();
+		if(this.getRightNode()!=null){
+			this.getRightNode().printAll();
+		}
+
+
+	}
 /*
 	public Tree traverse(){
 		if( this = this.lastLeftNode() )
