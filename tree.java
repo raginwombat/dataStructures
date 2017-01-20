@@ -63,15 +63,12 @@ class Tree{
 		vals[1] = this.getFirstName();
 		vals[2] = this.getPhoneNum();
 		vals[3] = this.getEmail();
-		//hash =  (String) (this.getLastName() + this.getFirstName() + this.getPhoneNum()+this.getEmail()).toUpperCase() ;
+		
 		for(String val:vals ){
-			//System.out.println("Hash sub val" + val);
-
 			if ( !val.isEmpty())
 				hash = hash + val.toUpperCase();
 			
 		}
-		//System.out.println("Hash val" + hash);
 		return hash;
 	}
 
@@ -87,7 +84,7 @@ class Tree{
 		int checkLength = thisHash.length();
 		if( checkLength > tHash.length() )
 				checkLength = tHash.length();
-			//Interate through smallest string and check for precedence
+			//RN Interate through smallest string and check for precedence
 		if(thisHash.isEmpty()){
 				this.setThis(t.getFirstName(), t.getLastName(), t.getEmail(), t.getPhoneNum(), t.getRightNode(), t.getLeftNode());
 				return true;
@@ -133,15 +130,12 @@ class Tree{
 	@returns: Boolean signifying sucessful insertion
 	*/
 		
-		//Check to see if node exists
-		//if (this.lookUp(new Tree(firstName,lastName) ) == null){
+		//RN Check to see if node exists
 		boolean result = this.insert(new Tree(firstName, lastName, email, phoneNum) );
 		if( result ) {
 
-			//Node doesn't exist
+			//RN Node doesn't exist
 			System.out.println("Added new node for: "+ firstName);
-			//this.insert(new Tree(firstName, lastName, email, phoneNum));
-
 			return true;
 
 		}
@@ -156,10 +150,9 @@ class Tree{
 	@param: Tree t be a valid tree
 	@returns: Boolean signifying sucessful insertion
 	*/
-	//this thing
 		Tree t= this.lookUp(new Tree(firstname, lastName));
 		if ( t!= null){
-			//Node doesn't exist
+			//RN Node doesn't exist
 			System.out.println("Deleting node for "+ firstname + " "+lastName);
 			return this.remove(t);
 		}
@@ -176,18 +169,16 @@ class Tree{
 		String checkHash = t.hash();
 		
 
-		//Case 1: root node needs to be removed
-		//Case 2:
-		//Case 3
+		//RN Case 1: root node needs to be removed
+		//RN Case 2:
+		//RN Case 3
 				
 		if( compareHash.startsWith( checkHash) ){
 
-			//System.out.println("Found match in delete");
-			//If 2 children
 			if(this.getLeftNode() != null && this.getRightNode() !=null){
-				//System.out.println("Have 2 children");
-				//Do a comlplicated shifteroo
-				//have to get parent and set this to null
+				//RN If 2 children
+				//RN Do a comlplicated shifteroo
+				//RN have to get parent and set it to null
 				this.setThis( this.lastLeftNode().getFirstName(), this.lastLeftNode().getLastName(), 
 					this.lastLeftNode().getEmail(), this.lastLeftNode().getPhoneNum(), this.lastLeftNode().getRightNode(),
 					this.lastLeftNode().getRightNode());
@@ -196,8 +187,8 @@ class Tree{
 			}
 
 			else if(this.getLeftNode() != null && this.getRightNode() == null){
-				//System.out.println("Haz l child");
-				//replace this w/ left node
+				//RN If only left child ;
+				//RN replace this w/ left node
 				this.setThis( this.getLeftNode().getFirstName(), this.getLeftNode().getLastName(), 
 					this.getLeftNode().getEmail(), this.getLeftNode().getPhoneNum(), this.getLeftNode().getLeftNode(),
 					null);
@@ -207,8 +198,8 @@ class Tree{
 			}
 
 			else if(this.getLeftNode() == null && this.getRightNode() != null){
-				//System.out.println("Haz r child");
-				//replace this w/  right node
+				//RN If only right child ;
+				//RN replace this w/  right node
 				this.setThis( this.getRightNode().lastLeftNode().getFirstName(), this.getRightNode().lastLeftNode().getLastName(), 
 					this.getRightNode().lastLeftNode().getEmail(), this.getRightNode().lastLeftNode().getPhoneNum(), this.getRightNode(),
 					this.getRightNode().lastLeftNode().getRightNode());
@@ -219,10 +210,9 @@ class Tree{
 			}
 
 			else if(this.getRightNode() == null & this.getLeftNode() == null){
-				//System.out.println("Haz no childn");
-				//just kill this node
+				//RN If no children;
+				//RN just kill this node, it'll get overwritten when inserting
 				this.setThis("","","","", null, null);
-				//System.out.println("set to null");
 				return true;
 			
 			}
@@ -233,32 +223,24 @@ class Tree{
 		thisHash = this.hash();
 		tHash = t.hash();
 
+			
 		int checkLength = thisHash.length();
+		//RN Interate through smallest string and check for precedence
 		if( checkLength > tHash.length() )
 				checkLength = tHash.length();
-			//Interate through smallest string and check for precedence
+
 		
 		for ( int i=0; i<checkLength; i++){
 			if(thisHash.charAt(i) < tHash.charAt(i) && this.getRightNode() != null ){
-				
-				return this.getRightNode().remove(t);
-				
-			}
-
-			
+				return this.getRightNode().remove(t);				
+			}			
 			else if(thisHash.charAt(i) > tHash.charAt(i) && this.getLeftNode() != null ){
-				return this.getLeftNode().remove(t);
-				
+				return this.getLeftNode().remove(t);				
 			}
-
 		}
-
 		System.out.println("Coulnd't find for delete: "+t.getName());
 		return false;
 	} 
-
-
-
 
 	public void print(){
 		System.out.println("First: "+ this.getFirstName() );
@@ -277,7 +259,6 @@ class Tree{
 	}
 
 	public boolean setRightNode(Tree rNode){
-		//System.out.println("Right node =:" + this.childRight);
 		if (this.childRight == null){
 			this.childRight = rNode;
 			return true;
@@ -288,7 +269,6 @@ class Tree{
 	}
 	
 	public boolean setLeftNode(Tree lNode){
-		//System.out.println("left node =:" + this.childLeft);
 		if (this.childLeft == null){
 			this.childLeft = lNode;
 			return true;
@@ -318,21 +298,17 @@ class Tree{
 		thisHash = this.hash();
 		tHash = t.hash();
 
-		//System.out.println("Lookup function hit for: "+t.getName());
 		int checkLength = thisHash.length();
 		if( checkLength > tHash.length() )
 				checkLength = tHash.length();
-			//Interate through smallest string and check for precedence
-		//System.out.println("Check length:" +checkLength);
 
-		//Full hash match
+		//RN Full hash match
 		if(thisHash == tHash){
 				return this;
 			}
 		
-		//Have to allow a partial string serach to accomodate first naem lookups 
+		//RN Have to allow a partial string serach to accomodate first naem lookups 
 		else if(thisHash.startsWith(tHash) ){
-			//System.out.println("Partial match");
 			return this;
 		}
 		else if(thisHash.isEmpty() || tHash.isEmpty()){
@@ -341,8 +317,6 @@ class Tree{
 		
 		for ( int i=0; i<=checkLength; i++){
 			if( thisHash.charAt(i) < tHash.charAt(i) && !thisHash.isEmpty() && !tHash.isEmpty() &&   this.getRightNode() != null ){
-				//System.out.println("tHash: " + tHash);
-				//System.out.println("thisHash: " + thisHash);
 				return this.childRight.lookUp(t);
 				
 			}
@@ -353,13 +327,10 @@ class Tree{
 			}
 			
 			if( thisHash.charAt(i) < tHash.charAt(i) &&  this.getRightNode() == null){
-				//System.out.println("tHash: " + tHash);
-				//System.out.println("thisHash: " + thisHash);
 				return null;
 			}
 
 			else if( thisHash.charAt(i) > tHash.charAt(i) &&  this.getLeftNode() == null ){
-				//this.childLeft.lookUp(t);
 				return null;
 			} 
 		}
@@ -416,23 +387,5 @@ class Tree{
 		if(this.getRightNode()!=null){
 			this.getRightNode().printAll();
 		}
-
-
 	}
-/*
-	public Tree traverse(){
-		if( this = this.lastLeftNode() )
-			return this;
-		else
-			return this.leftNode().traverse();
-
-		if(this = this.lastRightNode())
-			return this;
-		else
-			return this.rightNode.traverse();
-		if( this != this.lastRightNode || this !=lastLeftNode)
-			return this;
-
-
-	}  */
 }

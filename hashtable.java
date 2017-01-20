@@ -1,22 +1,22 @@
 class HashTable{
-	/*
+	/* RN
 	Hashtable impelemntation uses  hashtable with a chained data structure
 	new hashes are appended to the list.
 	*/
 	private Hash hashTable[];
 
 	public HashTable(){
-		/*Create new hash table*/
+		/* RNCreate new hash table*/
 		this.hashTable =  new Hash [13];
 
-		/*Initiate Hash  Tables */
+		/* RNInitiate Hash  Tables */
 		for ( int i=0; i< hashTable.length; i++)
 			this.hashTable[i] = new Hash();
 
 	}
 
 	private long hash(String firstName, String lastName){
-		/* Function to generate hashes for entires based on name of entrant. 
+		/* RN Function to generate hashes for entires based on name of entrant. 
 		@param: First and  last name strings
 		@returns: Hash as a string
 		*/
@@ -24,30 +24,30 @@ class HashTable{
 		int g = 31;
 		String name = firstName + lastName;
 		for( int i =0 ; i< name.length(); i++ ){
-			/* Mod Long.Max_Val compresses hash space reducing long overflows*/
+			/* RN Mod Long.Max_Val compresses hash space reducing long overflows*/
 			hash =  ((hash *g) + name.charAt(i)) % Long.MAX_VALUE;
 		}
 		return hash;
 	}
 
 	private int hashBucket(long hash){
-		/* Function to return  compessed hash bucket based on entry hash.
+		/* RN Function to return  compessed hash bucket based on entry hash.
 		@param: Long with the hash for an entry
 		@returns: Hash Bucket Entry
 		*/
 
-		/* Using Absolute value allows ignoring of negative hash values*/
+		/* RN Using Absolute value allows ignoring of negative hash values*/
 		return (int) ((hash  % 13) <= 0 ? (0-hash%13): (hash%13));
 	}
 
 
 	public boolean insert(Hash h){
-	/* Function to add hash to hash table. Apppends new hashes to end of bucket list
+	/* RN Function to add hash to hash table. Apppends new hashes to end of bucket list
 	@param: Hash to be inserted into the hastable
 	@returns: boolean value if the insertion was sucessfull
 	*/
 		
-		/*Bucket index provides the index for the set of nodes the new node will be attached do
+		/* RNBucket index provides the index for the set of nodes the new node will be attached do
 		the code is broken out for clarity*/
 		int bucketIndex = this.hashBucket( h.getHash());
 		
@@ -56,7 +56,7 @@ class HashTable{
 
 
 	public boolean delete(Hash h){
-	/* Function to delete hashes form hash table.
+	/* RN Function to delete hashes form hash table.
 	Uses java reference passing ot manipulate hash bucket using alias checkHash.
 	@param: Hashes to be deleted from the has table
 	@returns: The values that were deleted from the has table.
@@ -68,25 +68,25 @@ class HashTable{
 		prevHash  = hashTable[ bucketIndex];
 		checkHash = prevHash.getNext();
 
-		//Case: Hash found in first node have to reset bucket Index
+		//RN Case: Hash found in first node have to reset bucket Index
 		if(prevHash.getHash() == h.getHash()){
 			hashTable[bucketIndex] = checkHash;
 			return true;
 		}
 
-		//Check for hash in rest of hashes
+		//RN Check for hash in rest of hashes
 		while( prevHash.getHash() != h.getHash() && checkHash.getHash() != h.getHash()  && checkHash.getNext() != null ){
 			prevHash = checkHash;
 			checkHash = checkHash.getNext();
 		}
 
-		//Case: Hash found someohere in between
+		//RN Case: Hash found someohere in between
 		if(checkHash.getHash() == h.getHash()){
 			prevHash.setNext( checkHash.getNext());
 			return true;
 		}
 	
-		/*Case: hash not found by last node equilavent check to 
+		/* RNCase: hash not found by last node equilavent check to 
 		if(prevHash.getHash() != h.getHash() && checkHash.getHash() != h.getHash() 
 			&& checkHash == prevHash.returnLastNode())
 		*/
@@ -99,7 +99,7 @@ class HashTable{
 
 
 	public Hash get(Hash h){
-	/* Function to return the data elements form the hashes provided
+	/* RN Function to return the data elements form the hashes provided
 	@param: Hashes to mapped to values
 	@returns: The values that correspond to the given hashes
 	*/
@@ -107,20 +107,6 @@ class HashTable{
 		
 		int bucketIndex = this.hashBucket( h.getHash());
 		return this.lookUp( h.getHash(), bucketIndex);
-
-	/*
-		checkHash = hashTable[ bucketIndex];
-		while( checkHash.getHash() != h.getHash() && checkHash.getNext() != null){
-			checkHash = checkHash.getNext();
-		}
-		if(checkHash.getHash() == h.getHash() ){
-			checkHash.print();
-			return checkHash.getNext();
-		}
-		
-		else
-			return null;
-			*/
 	}
 
 	private Hash lookUp(long hashVal, int bucketIndex) {
@@ -131,7 +117,7 @@ class HashTable{
 		}
 
 		if(checkHash != null &&checkHash.getHash() == hashVal ){
-			//checkHash.print();
+			//RN checkHash.print();
 			return checkHash;
 		}
 		
