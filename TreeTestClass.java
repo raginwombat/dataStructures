@@ -15,7 +15,7 @@ class TreeTestClass{
 		bTree.add( "Jill", "Jones", "555-235-1118", "jillj@hill.com");//found
 		bTree.add( "John", "Doe", "555-235-1119", "jdoe@somedomain.com");//found
 		bTree.add( "Jane", "Doe", "555-235-1120", "jdoe@somedomain.com");//found
-		
+		bTree.nameLookUp( "John", "Doe");
 		bTree.nameLookUp( "Pat", "Jones");
 		bTree.nameLookUp( "Billy", "Kidd");
 		bTree.nameDelete( "John", "Doe");
@@ -28,6 +28,8 @@ class TreeTestClass{
 		bTree.add( "Upside", "Down", "555-235-1126", "upsidedown@rightsideup.com");//found
 		bTree.nameLookUp( "Jack", "Jones");
 		bTree.nameLookUp( "Nadezhda", "Kanachekhovskaya");
+		bTree.nameLookUp( "Jill", "Jones"); // (What should happen if the “lookup” message doesn’t find the entry?);
+		bTree.nameLookUp( "John", "Doe");
 		bTree.nameDelete( "Jill", "Jones");
 		bTree.nameDelete( "John", "Doe");
 		bTree.nameLookUp( "Jill", "Jones"); // (What should happen if the “lookup” message doesn’t find the entry?);

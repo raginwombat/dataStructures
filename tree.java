@@ -151,25 +151,114 @@ class Tree{
 		}
 	}
 
-	public boolean delete(Tree t){
+	public boolean nameDelete(String firstname, String lastName){
 	/* Function to delete a given node in the the current tree
 	@param: Tree t be a valid tree
 	@returns: Boolean signifying sucessful insertion
 	*/
-		if (this.lookUp(new Tree(t.getFirstName(), t.getLastName()) ) != null){
+	//this thing
+		Tree t= this.lookUp(new Tree(firstname, lastName));
+		if ( t!= null){
 			//Node doesn't exist
-			this.insert(new Tree(t.getFirstName(), t.getLastName(), t.getEmail(), t.getPhoneNum()));
-			return true;
+			System.out.println("Deleting node for "+ firstname + " "+lastName);
+			return this.remove(t);
+		}
+		else{
+			System.out.println("Node not deleted for "+ firstname + " "+lastName );
+			return false;
 
 		}
-		else
-			return false;
 	}
 
-	public boolean remove(Tree t){
 
-		return true;
+	public boolean remove(Tree t){
+		String compareHash = this.hash();
+		String checkHash = t.hash();
+		
+
+		//Case 1: root node needs to be removed
+		//Case 2:
+		//Case 3
+				
+		if( compareHash.startsWith( checkHash) ){
+
+			//System.out.println("Found match in delete");
+			//If 2 children
+			if(this.getLeftNode() != null && this.getRightNode() !=null){
+				//System.out.println("Have 2 children");
+				//Do a comlplicated shifteroo
+				//have to get parent and set this to null
+				this.setThis( this.lastLeftNode().getFirstName(), this.lastLeftNode().getLastName(), 
+					this.lastLeftNode().getEmail(), this.lastLeftNode().getPhoneNum(), this.lastLeftNode().getRightNode(),
+					this.lastLeftNode().getRightNode());
+				this.lastLeftNode().setThis("", "", "", "", null, null);
+				return true;
+			}
+
+			else if(this.getLeftNode() != null && this.getRightNode() == null){
+				//System.out.println("Haz l child");
+				//replace this w/ left node
+				this.setThis( this.getLeftNode().getFirstName(), this.getLeftNode().getLastName(), 
+					this.getLeftNode().getEmail(), this.getLeftNode().getPhoneNum(), this.getLeftNode().getLeftNode(),
+					null);
+
+				this.setLeftNode(null);
+				return true;
+			}
+
+			else if(this.getLeftNode() == null && this.getRightNode() != null){
+				//System.out.println("Haz r child");
+				//replace this w/  right node
+				this.setThis( this.getRightNode().lastLeftNode().getFirstName(), this.getRightNode().lastLeftNode().getLastName(), 
+					this.getRightNode().lastLeftNode().getEmail(), this.getRightNode().lastLeftNode().getPhoneNum(), this.getRightNode(),
+					this.getRightNode().lastLeftNode().getRightNode());
+
+				this.getRightNode().setRightNode(null);
+				return true;
+				
+			}
+
+			else if(this.getRightNode() == null & this.getLeftNode() == null){
+				//System.out.println("Haz no childn");
+				//just kill this node
+				this.setThis("","","","", null, null);
+				//System.out.println("set to null");
+				return true;
+			
+			}
+
+		}
+
+		String thisHash, tHash;
+		thisHash = this.hash();
+		tHash = t.hash();
+
+		int checkLength = thisHash.length();
+		if( checkLength > tHash.length() )
+				checkLength = tHash.length();
+			//Interate through smallest string and check for precedence
+		
+		for ( int i=0; i<checkLength; i++){
+			if(thisHash.charAt(i) < tHash.charAt(i) && this.getRightNode() != null ){
+				
+				return this.getRightNode().remove(t);
+				
+			}
+
+			
+			else if(thisHash.charAt(i) > tHash.charAt(i) && this.getLeftNode() != null ){
+				return this.getLeftNode().remove(t);
+				
+			}
+
+		}
+
+		System.out.println("Coulnd't find for delete: "+t.getName());
+		return false;
 	} 
+
+
+
 
 	public void print(){
 		System.out.println("First: "+ this.getFirstName() );
@@ -210,20 +299,6 @@ class Tree{
 	}
 
 
-	public void preOrderSort(){
-
-
-	}
-
-	public void postOrderSort(){
-
-
-	}
-
-	public void preSort(){
-
-
-	}
 
 
 	public void nameLookUp(String firstName, String lastName){
@@ -294,9 +369,7 @@ class Tree{
 		return null;
 	}
 
-	public void nameDelete(String firstName, String lastName){
 
-	}
 
 	private Tree lastRightNode(){
 		if( this.getRightNode() == null)
